@@ -1,0 +1,9 @@
+# settings
+/settings.py
+
+# ide
+__pycache__/
+/.vscode
+
+# venv
+/.venv
