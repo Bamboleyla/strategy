@@ -8,13 +8,14 @@ def calculate_data(data: pd.DataFrame, indicators: list[dict]) -> pd.DataFrame:
     # Initialize columns
     cols_to_init = [
         "BUY_PRICE",  # buy price position
-        "SELL_PRICE",  # sell price position
+        "ST_PRICE",  # stop price position (when work time is over)
         "SL_PRICE",  # stop loss price
         "TP_PRICE",  # take profit price
         "COMMISSION",  # commission for one action
         "EQUITY",  # equity
         "POSITION",  # position size
-        "TRADE_RESULT",  # trade result
+        "SL_LINE",  # stop loss line
+        "TP_LINE",  # take profit line
     ]
 
     for col in cols_to_init:
@@ -72,8 +73,8 @@ def calculate_data(data: pd.DataFrame, indicators: list[dict]) -> pd.DataFrame:
                     trade_balance -= position_price - commission
 
                     data.loc[i, "BUY_PRICE"] = position_price
-                    data.loc[i, "SL_PRICE"] = stop_loss
-                    data.loc[i, "TP_PRICE"] = take_profit
+                    data.loc[i, "SL_LINE"] = stop_loss
+                    data.loc[i, "TP_LINE"] = take_profit
                     data.loc[i, "COMMISSION"] = commission
                     data.loc[i, "POSITION"] = position
 
@@ -82,43 +83,41 @@ def calculate_data(data: pd.DataFrame, indicators: list[dict]) -> pd.DataFrame:
                 position = 0
                 stop_loss = None
                 commission = round(take_profit * 0.0005, 2)
-                equity += round(trade_balance + take_profit - commission, 2)
+                equity += trade_balance + take_profit - commission
                 trade_balance = 0
-                data.loc[i, "SELL_PRICE"] = take_profit
+                data.loc[i, "TP_PRICE"] = take_profit
                 take_profit = None
                 data.loc[i, "COMMISSION"] = commission
                 data.loc[i, "POSITION"] = position
-                data.loc[i, "EQUITY"] = equity
-            elif (
-                data.loc[i, "DATE"].time() == stop_time or data.loc[i, st_lower] is None
-            ):
+                data.loc[i, "EQUITY"] = round(equity, 2)
+            elif data.loc[i, "DATE"].time() == stop_time:
                 position = 0
                 stop_loss = None
                 take_profit = None
                 commission = round(data.loc[i, "OPEN"] * 0.0005, 2)
-                equity += round(trade_balance + data.loc[i, "OPEN"] - commission, 2)
+                equity += trade_balance + data.loc[i, "OPEN"] - commission
                 trade_balance = 0
-                data.loc[i, "SELL_PRICE"] = data.loc[i, "OPEN"]
+                data.loc[i, "ST_PRICE"] = data.loc[i, "OPEN"]
                 data.loc[i, "COMMISSION"] = commission
                 data.loc[i, "POSITION"] = position
-                data.loc[i, "EQUITY"] = equity
+                data.loc[i, "EQUITY"] = round(equity, 2)
             elif data.loc[i, "LOW"] < stop_loss:
                 position = 0
                 commission = round(stop_loss * 0.0005, 2)
-                equity += round(trade_balance + stop_loss - commission, 2)
+                equity += trade_balance + stop_loss - commission
                 trade_balance = 0
-                data.loc[i, "SELL_PRICE"] = stop_loss
+                data.loc[i, "SL_PRICE"] = stop_loss
                 stop_loss = None
                 take_profit = None
                 data.loc[i, "COMMISSION"] = commission
                 data.loc[i, "POSITION"] = position
-                data.loc[i, "EQUITY"] = equity
+                data.loc[i, "EQUITY"] = round(equity, 2)
             else:
                 if take_profit != data.loc[i, pc_high]:
                     take_profit = data.loc[i, pc_high]
                 if stop_loss != data.loc[i, st_lower]:
                     stop_loss = data.loc[i, st_lower]
-                data.loc[i, "SL_PRICE"] = stop_loss
-                data.loc[i, "TP_PRICE"] = take_profit
+                data.loc[i, "SL_LINE"] = stop_loss
+                data.loc[i, "TP_LINE"] = take_profit
 
     return data

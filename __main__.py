@@ -5,6 +5,7 @@ import pandas as pd
 
 from prepare import prepare_data
 from calculate import calculate_data
+from report import report_method
 from show import show_plot
 
 start_time = time.time()
@@ -28,6 +29,7 @@ prepared_quotes = pd.read_csv("data/prepared_quotes.csv")
 calculated_quotes = calculate_data(prepared_quotes, config["indicators"])
 calculated_quotes.to_csv("data/calculated_quotes.csv", index=False)
 
+report_method(calculated_quotes)
 show_plot(calculated_quotes, config["indicators"])
 
 print(f"Execution time: {time.time() - start_time}")
