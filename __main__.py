@@ -3,10 +3,12 @@
 import time
 import pandas as pd
 
-from prepare import prepare_method
+from prepare import prepare_data
+from calculate import calculate_data
+from show import show_plot
 
 start_time = time.time()
-quotes = pd.read_csv("data/quotes.csv")
+# quotes = pd.read_csv("data/quotes.csv")
 
 # create config
 config = {
@@ -17,8 +19,15 @@ config = {
 }
 
 # prepare and save data
-prepared_quotes = prepare_method(quotes, config["indicators"])
-prepared_quotes.to_csv("data/prepared_quotes.csv", index=False)
+# prepared_quotes = prepare_data(quotes, config["indicators"])
+# prepared_quotes.to_csv("data/prepared_quotes.csv", index=False)
 
+# calculate and save data
+prepared_quotes = pd.read_csv("data/prepared_quotes.csv")
+
+calculated_quotes = calculate_data(prepared_quotes, config["indicators"])
+calculated_quotes.to_csv("data/calculated_quotes.csv", index=False)
+
+show_plot(calculated_quotes, config["indicators"])
 
 print(f"Execution time: {time.time() - start_time}")

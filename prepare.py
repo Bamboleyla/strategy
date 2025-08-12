@@ -6,7 +6,7 @@ import pandas as pd
 from myLib.indicators import price_chanel, super_trend
 
 
-def prepare_method(quotes: pd.DataFrame, indicators) -> pd.DataFrame:
+def prepare_data(quotes: pd.DataFrame, indicators) -> pd.DataFrame:
     new_quotes = quotes.copy()
     # We remove the lines with the same values ​​in the columns Open, High, Low, Close
     new_quotes = new_quotes[
