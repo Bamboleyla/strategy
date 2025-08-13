@@ -63,7 +63,7 @@ def show_plot(data, indicators):
             {
                 "name": "STOP_LOSS",
                 "price_col": "SL_PRICE",
-                "offset": 1,
+                "offset": -1,
                 "color": "#FF5B5B",
                 "style": "p",
                 "legend": "stop loss",
@@ -72,7 +72,7 @@ def show_plot(data, indicators):
             {
                 "name": "CLOSE_TIME",
                 "price_col": "ST_PRICE",
-                "offset": 1,
+                "offset": -1,
                 "color": "#3C74BD",
                 "style": "d",
                 "legend": "close time",

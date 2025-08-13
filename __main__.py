@@ -7,9 +7,10 @@ from prepare import prepare_data
 from calculate import calculate_data
 from report import report_method
 from show import show_plot
+from utils import resample_dataframe
 
-start_time = time.time()
-# quotes = pd.read_csv("data/quotes.csv")
+quotes = pd.read_csv("data/quotes.csv")
+# quotes = resample_dataframe(quotes, 6)
 
 # create config
 config = {
@@ -24,12 +25,13 @@ config = {
 # prepared_quotes.to_csv("data/prepared_quotes.csv", index=False)
 
 # calculate and save data
-prepared_quotes = pd.read_csv("data/prepared_quotes.csv")
+# prepared_quotes = pd.read_csv("data/prepared_quotes.csv")
 
-calculated_quotes = calculate_data(prepared_quotes, config["indicators"])
-calculated_quotes.to_csv("data/calculated_quotes.csv", index=False)
+# calculated_quotes = calculate_data(prepared_quotes, config["indicators"])
+# calculated_quotes.to_csv("data/calculated_quotes.csv", index=False)
+
+calculated_quotes = pd.read_csv("data/calculated_quotes.csv")
+calculated_quotes["DATE"] = pd.to_datetime(calculated_quotes["DATE"])
 
 report_method(calculated_quotes)
 show_plot(calculated_quotes, config["indicators"])
-
-print(f"Execution time: {time.time() - start_time}")

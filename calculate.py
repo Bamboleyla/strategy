@@ -25,15 +25,6 @@ def calculate_data(data: pd.DataFrame, indicators: list[dict]) -> pd.DataFrame:
         indicators
     )  # Take names colums from indicators data
 
-    # add prev data columns
-    prev_pc_low_col = f"prev_{pc_low}"
-    prev_pc_high_col = f"prev_{pc_high}"
-    prev_st_lower_col = f"prev_{st_lower}"
-
-    data[prev_pc_low_col] = data[pc_low].shift(1)
-    data[prev_pc_high_col] = data[pc_high].shift(1)
-    data[prev_st_lower_col] = data[st_lower].shift(1)
-
     data["DATE"] = pd.to_datetime(data["DATE"])
     open_time = pd.Timestamp("07:00:00").time()
     close_time = pd.Timestamp("23:00:00").time()
